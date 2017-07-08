@@ -1,18 +1,39 @@
-# # encoding: utf-8
+# encoding: utf-8
 
 # Inspec test for recipe virtualbox::default
 
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-unless os.windows?
-  # This is an example test, replace with your own test.
-  describe user('root'), :skip do
-    it { should exist }
+dependencies = %W(gcc make kernel-devel)
+repo = '/etc/yum.repos.d/virtualbox.repo'
+package = 'VirtualBox-5.1'
+services = %w(
+  vboxdrv
+  vboxautostart-service
+  vboxballoonctrl-service
+  vboxweb-service
+)
+
+dependencies.each do |pkg|
+  describe package pkg do
+    it { should be_installed }
   end
 end
 
-# This is an example test, replace it with your own test.
-describe port(80), :skip do
-  it { should_not be_listening }
+describe file repo do
+  it { should be_file }
+  its('content') { should include '[virtualbox]' }
+end
+
+describe package package do
+  it { should be_installed }
+end
+
+services.each do |svc|
+  describe service svc do
+    it { should be_enabled }
+    it { should be_installed }
+    it { should be_running }
+  end
 end
