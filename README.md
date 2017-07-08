@@ -1,2 +1,2 @@
 # virtualbox
-Chef cookbook for VirtualBox
+Chef Cookbook for VirtualBox
