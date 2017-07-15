@@ -15,15 +15,6 @@ shared_examples 'virtualbox_test' do |platform, metadata|
       expect { chef_run }.to_not raise_error
     end
 
-    it 'installs dependencies' do
-      expect(chef_run).to install_package metadata['dependencies']
-    end
-
-    kernel_headers = metadata['kernel_headers']
-    it "installs #{kernel_headers}" do
-      expect(chef_run).to install_package kernel_headers
-    end
-
     package = metadata['package']
     it "installs #{package}" do
       expect(chef_run).to install_package package
@@ -45,8 +36,6 @@ describe 'virtualbox::default' do
   platforms = {
     'centos' => {
       'version' => '7.3.1611',
-      'dependencies' => %w(gcc make),
-      'kernel_headers' => 'kernel-devel',
       'package' => 'VirtualBox-5.1',
       'services' => %w(
         vboxdrv

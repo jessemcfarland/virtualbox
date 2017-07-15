@@ -4,9 +4,7 @@
 
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
-
-dependencies = %W(gcc make kernel-devel)
-repo = '/etc/yum.repos.d/virtualbox.repo'
+#
 package = 'VirtualBox-5.1'
 services = %w(
   vboxdrv
@@ -15,15 +13,12 @@ services = %w(
   vboxweb-service
 )
 
-dependencies.each do |pkg|
-  describe package pkg do
-    it { should be_installed }
+case os[:family]
+when 'redhat'
+  describe yum.repo 'virtualbox' do
+    it { should exist }
+    it { should be_enabled }
   end
-end
-
-describe file repo do
-  it { should be_file }
-  its('content') { should include '[virtualbox]' }
 end
 
 describe package package do
